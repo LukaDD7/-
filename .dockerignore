@@ -1,0 +1,13 @@
+**
+!deploy/
+!deploy/Dockerfile
+!deploy/runtime/
+!deploy/runtime/package.json
+!deploy/runtime/package-lock.json
+!server/
+!server/**
+!lib/
+!lib/planner.ts
+!lib/llm-service.ts
+!dist-local/
+!dist-local/**

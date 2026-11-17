@@ -1,0 +1,27 @@
+[Unit]
+Description=Shixu planner cloud backend
+After=network-online.target postgresql@17-shixu.service
+Wants=network-online.target
+Requires=postgresql@17-shixu.service
+
+[Service]
+Type=simple
+User=shixu
+Group=shixu
+WorkingDirectory=/opt/shixu
+EnvironmentFile=/etc/shixu/app.env
+Environment=NODE_OPTIONS=--max-old-space-size=192
+ExecStart=/usr/bin/node --experimental-strip-types server/index.mjs
+Restart=on-failure
+RestartSec=5
+MemoryHigh=280M
+MemoryMax=360M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictSUIDSGID=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

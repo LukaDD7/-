@@ -1,0 +1,10 @@
+{
+  "name": "shixu-cloud-runtime",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pg": "8.23.1",
+    "zod": "3.25.76"
+  }
+}

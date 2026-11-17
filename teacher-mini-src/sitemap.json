@@ -1,0 +1,1 @@
+{"desc":"教师工作资料不被搜索索引","rules":[{"action":"disallow","page":"*"}]}

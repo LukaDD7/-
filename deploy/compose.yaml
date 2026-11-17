@@ -1,0 +1,46 @@
+name: shixu
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: shixu
+      POSTGRES_USER: shixu
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes: ["shixu_pg:/var/lib/postgresql/data"]
+    command: ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=15"]
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shixu -d shixu"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    env_file: /etc/shixu/app.env
+    environment:
+      PGHOST: db
+      PGDATABASE: shixu
+      PGUSER: shixu
+      PORT: "8080"
+      HOST: "0.0.0.0"
+      NODE_OPTIONS: --max-old-space-size=192
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 320m
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+secrets:
+  db_password:
+    file: /etc/shixu/db_password
+volumes:
+  shixu_pg:
